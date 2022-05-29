@@ -19,6 +19,8 @@ type info struct {
 }
 
 func main() {
+	fmt.Println("程序运行中....")
+
 	// 初始化
 	GetInfo()
 
@@ -29,7 +31,7 @@ func main() {
 func Server() {
 	// 空转，到达五点或八点时开始下面的程序
 	for true {
-		if time.Now().Hour() == 17 || time.Now().Hour() == 20 {
+		if time.Now().Hour() == 16 || time.Now().Hour() == 20 || time.Now().Hour() == 10 {
 			break
 		}
 	}
@@ -50,12 +52,14 @@ func Server() {
 func GroupServer() {
 	var msg string
 
+	msg = "[今日提醒]"
+
 	// 先用CQ码将需要艾特的人补齐
 	for name, _ := range names {
 		msg += "[CQ:at,qq=" + names[name].QNum + "]"
 	}
 	// 提醒打卡
-	msg += "这些同学别忘记打卡嗷"
+	msg += "[CQ:face,id=30]这些同学别忘记打卡嗷!"
 
 	// 机器人发送信息接口（http）
 	url := "http://127.0.0.1:5700/send_group_msg?group_id=517066415&message=" + msg
@@ -111,14 +115,14 @@ func GetInfo() {
 			fmt.Println(err)
 			return
 		}
-		//QQNum, err := f.GetCellValue("Sheet1", "C"+str)
-		//if err != nil {
-		//	fmt.Println(err)
-		//	return
-		//}
+		QQNum, err := f.GetCellValue("Sheet1", "C"+str)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 
 		Info.xh = xh
-		//info.QNum = QQNum
+		Info.QNum = QQNum
 		classmate[name] = Info
 	}
 }
