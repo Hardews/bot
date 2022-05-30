@@ -31,8 +31,11 @@ func main() {
 func Server() {
 	// 空转，到达五点或八点时开始下面的程序
 	for true {
-		if time.Now().Hour() == 16 || time.Now().Hour() == 20 || time.Now().Hour() == 10 {
+		if time.Now().Hour() == 16 || time.Now().Hour() == 20 || time.Now().Hour() == 12 {
 			break
+		} else {
+			fmt.Println("睡眠中....")
+			time.Sleep(45 * time.Minute)
 		}
 	}
 
@@ -62,7 +65,7 @@ func GroupServer() {
 	msg += "[CQ:face,id=30]这些同学别忘记打卡嗷!"
 
 	// 机器人发送信息接口（http）
-	url := "http://127.0.0.1:5700/send_group_msg?group_id=517066415&message=" + msg
+	url := "http://127.0.0.1:5700/send_group_msg?group_id=676416672&message=" + msg
 	var req *http.Request
 	var client = &http.Client{}
 	var err error
