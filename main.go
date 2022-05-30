@@ -42,7 +42,7 @@ func Server() {
 			break
 		} else {
 			fmt.Println("睡眠中....")
-			time.Sleep(45 * time.Minute)
+			time.Sleep(58 * time.Minute)
 		}
 	}
 
