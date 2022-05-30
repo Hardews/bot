@@ -21,6 +21,13 @@ type info struct {
 func main() {
 	fmt.Println("程序运行中....")
 
+	for true {
+		if time.Now().Minute() == 0 {
+			break
+		}
+		time.Sleep(20 * time.Second)
+	}
+
 	// 初始化
 	GetInfo()
 
@@ -48,22 +55,15 @@ func Server() {
 		}
 	}
 
-	GroupServer()
+	if len(names) == 0 {
+		DoNot()
+	}
+
+	DoAt()
 }
 
 // GroupServer 给群组发送消息
-func GroupServer() {
-	var msg string
-
-	msg = "[今日提醒]"
-
-	// 先用CQ码将需要艾特的人补齐
-	for name, _ := range names {
-		msg += "[CQ:at,qq=" + names[name].QNum + "]"
-	}
-	// 提醒打卡
-	msg += "[CQ:face,id=30]这些同学别忘记打卡嗷!"
-
+func GroupServer(msg string) {
 	// 机器人发送信息接口（http）
 	url := "http://127.0.0.1:5700/send_group_msg?group_id=676416672&message=" + msg
 	var req *http.Request
@@ -89,6 +89,28 @@ func GroupServer() {
 	// 睡眠一小时，防止再次艾特
 	time.Sleep(1 * time.Hour)
 	Server()
+}
+
+func DoNot() {
+	var msg string
+	msg = "[CQ:face,id=0]居然全部打完卡了袜，那我岂不是失业了？"
+
+	GroupServer(msg)
+}
+
+func DoAt() {
+	var msg string
+
+	msg = "[今日提醒]"
+
+	// 先用CQ码将需要艾特的人补齐
+	for name, _ := range names {
+		msg += "[CQ:at,qq=" + names[name].QNum + "]"
+	}
+	// 提醒打卡
+	msg += "[CQ:face,id=30]这些同学别忘记打卡嗷!"
+
+	GroupServer(msg)
 }
 
 func GetInfo() {
