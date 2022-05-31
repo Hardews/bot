@@ -43,6 +43,8 @@ func IsClock(xh string) bool {
 		return res
 	}
 
+	time.Sleep(1 * time.Second)
+
 	defer resp.Body.Close()
 
 	// we重邮返回的数据处理，返回的是一个json 格式是 一个大map里 一个字段data 对应以前的三次打卡信息map

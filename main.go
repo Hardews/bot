@@ -22,6 +22,7 @@ func main() {
 	fmt.Println("程序运行中....")
 
 	for true {
+		fmt.Println("adjust time ...")
 		if time.Now().Minute() == 0 {
 			break
 		}
@@ -38,7 +39,7 @@ func main() {
 func Server() {
 	// 空转，到达五点或八点时开始下面的程序
 	for true {
-		if time.Now().Hour() == 16 || time.Now().Hour() == 20 || time.Now().Hour() == 10 {
+		if time.Now().Hour() == 16 || time.Now().Hour() == 20 || time.Now().Hour() == 9 || time.Now().Hour() == 12 {
 			break
 		} else {
 			fmt.Println("睡眠中....")
