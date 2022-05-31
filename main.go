@@ -21,12 +21,13 @@ type info struct {
 func main() {
 	fmt.Println("程序运行中....")
 
+	// 调整时间为整点
 	for true {
 		fmt.Println("adjust time ...")
 		if time.Now().Minute() == 0 {
 			break
 		}
-		time.Sleep(20 * time.Second)
+		time.Sleep(25 * time.Second)
 	}
 
 	// 初始化
@@ -43,6 +44,7 @@ func Server() {
 			break
 		} else {
 			fmt.Println("睡眠中....")
+			// 两分钟的容错
 			time.Sleep(58 * time.Minute)
 		}
 	}
@@ -86,6 +88,11 @@ func GroupServer(msg string) {
 
 	// 成功
 	fmt.Println("successful")
+
+	// 清空map，让它不重复上次的艾特
+	for s, _ := range names {
+		delete(names, s)
+	}
 
 	// 睡眠一小时，防止再次艾特
 	time.Sleep(1 * time.Hour)

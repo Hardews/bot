@@ -43,6 +43,7 @@ func IsClock(xh string) bool {
 		return res
 	}
 
+	// 请求延时
 	time.Sleep(1 * time.Second)
 
 	defer resp.Body.Close()
@@ -69,6 +70,7 @@ func IsClock(xh string) bool {
 	latestTime := userMap["created_at"]
 
 	// 再次确认是否打卡后返回
+	// 如果we重邮有返回值但未打卡，可以通过判断打卡时间来确认是否打卡
 	if now[:10] == latestTime.(string)[:10] {
 		res = true
 		return res
