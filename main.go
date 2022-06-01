@@ -21,15 +21,6 @@ type info struct {
 func main() {
 	fmt.Println("程序运行中....")
 
-	// 调整时间为整点
-	for true {
-		fmt.Println("adjust time ...")
-		if time.Now().Minute() == 0 {
-			break
-		}
-		time.Sleep(25 * time.Second)
-	}
-
 	// 初始化
 	GetInfo()
 
@@ -44,11 +35,14 @@ func Server() {
 			break
 		} else {
 			fmt.Println("睡眠中....")
-			// 两分钟的容错
-			time.Sleep(58 * time.Minute)
+
+			time.Sleep(45 * time.Minute)
 		}
 	}
 
+	var num = 0
+
+checks:
 	// 用班上所有人的学号查询
 	for s, i := range classmate {
 		res := check.IsClock(i.xh)
@@ -60,6 +54,21 @@ func Server() {
 
 	if len(names) == 0 {
 		DoNot()
+	} else if len(names) == len(classmate) {
+		// 如果全部人都要艾特，则删掉重来
+		// 超过三次出bug发信息给我
+		if num == 3 {
+			IfBug()
+		}
+		num++
+
+		// 清空map
+		for s := range names {
+			delete(names, s)
+		}
+
+		// 重返
+		goto checks
 	}
 
 	DoAt()
@@ -90,13 +99,38 @@ func GroupServer(msg string) {
 	fmt.Println("successful")
 
 	// 清空map，让它不重复上次的艾特
-	for s, _ := range names {
+	for s := range names {
 		delete(names, s)
 	}
 
 	// 睡眠一小时，防止再次艾特
 	time.Sleep(1 * time.Hour)
 	Server()
+}
+
+func IfBug() {
+	msg := "您的程序成功出问题了，赶紧去看看看看看看看看吧"
+	url := "http://127.0.0.1:5700//send_private_msg?user_id=1225101127&message=" + msg
+
+	var req *http.Request
+	var client = &http.Client{}
+	var err error
+	// 新建请求
+	req, err = http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		fmt.Println("new request failed,err:", err)
+		return
+	}
+
+	// 发送请求，不太需要它的回应
+	_, err = client.Do(req)
+	if err != nil {
+		fmt.Println("do request failed,err:", err)
+		return
+	}
+
+	// 成功
+	fmt.Println("successful")
 }
 
 func DoNot() {

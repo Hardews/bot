@@ -44,7 +44,7 @@ func IsClock(xh string) bool {
 	}
 
 	// 请求延时
-	time.Sleep(1 * time.Second)
+	time.Sleep(5 * time.Second)
 
 	defer resp.Body.Close()
 
