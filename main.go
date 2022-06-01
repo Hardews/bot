@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/xuri/excelize/v2"
@@ -12,6 +13,7 @@ import (
 
 var classmate = make(map[string]info, 33)
 var names = make(map[string]info)
+var mu sync.Mutex
 
 type info struct {
 	QNum string
@@ -31,7 +33,7 @@ func main() {
 func Server() {
 	// 空转，到达五点或八点时开始下面的程序
 	for true {
-		if time.Now().Hour() == 16 || time.Now().Hour() == 20 || time.Now().Hour() == 9 || time.Now().Hour() == 12 {
+		if time.Now().Hour() == 16 || time.Now().Hour() == 20 || time.Now().Hour() == 9 || time.Now().Hour() == 13 {
 			break
 		} else {
 			fmt.Println("睡眠中....")
@@ -45,11 +47,13 @@ func Server() {
 checks:
 	// 用班上所有人的学号查询
 	for s, i := range classmate {
+		mu.Lock()
 		res := check.IsClock(i.xh)
 		if !res {
 			// 将未打卡的人加入名单
 			names[s] = classmate[s]
 		}
+		mu.Unlock()
 	}
 
 	if len(names) == 0 {
@@ -103,6 +107,9 @@ func GroupServer(msg string) {
 		delete(names, s)
 	}
 
+	if time.Now().Hour() == 20 {
+		time.Sleep(10 * time.Hour)
+	}
 	// 睡眠一小时，防止再次艾特
 	time.Sleep(1 * time.Hour)
 	Server()
