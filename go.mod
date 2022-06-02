@@ -2,7 +2,10 @@ module bot
 
 go 1.17
 
-require github.com/xuri/excelize/v2 v2.6.0
+require (
+	github.com/robfig/cron v1.2.0
+	github.com/xuri/excelize/v2 v2.6.0
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect

@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/robfig/cron"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -26,43 +27,44 @@ func main() {
 	// 初始化
 	GetInfo()
 
-	// 进入服务页面
-	Server()
+	// 创建定时任务为 9 12 14 20点整查询
+	c := cron.New()
+	spec := "0 0 9,12,14,20 * * *"
+	err := c.AddFunc(spec, func() {
+		fmt.Println("server start")
+		Server()
+		time.Sleep(2 * time.Minute)
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+	c.Start()
+	select {}
 }
 
 func Server() {
-	// 空转，到达五点或八点时开始下面的程序
-	for true {
-		if time.Now().Hour() == 16 || time.Now().Hour() == 20 || time.Now().Hour() == 9 || time.Now().Hour() == 13 {
-			break
-		} else {
-			fmt.Println("睡眠中....")
-
-			time.Sleep(45 * time.Minute)
-		}
-	}
+	fmt.Println("check start")
 
 	var num = 0
 
 checks:
 	// 用班上所有人的学号查询
 	for s, i := range classmate {
-		mu.Lock()
 		res := check.IsClock(i.xh)
 		if !res {
 			// 将未打卡的人加入名单
 			names[s] = classmate[s]
 		}
-		mu.Unlock()
 	}
 
+	fmt.Println("check successful")
 	if len(names) == 0 {
 		DoNot()
 	} else if len(names) == len(classmate) {
 		// 如果全部人都要艾特，则删掉重来
 		// 超过三次出bug发信息给我
 		if num == 3 {
-			IfBug()
+			IfBug("因为艾特全部人")
 		}
 		num++
 
@@ -106,17 +108,10 @@ func GroupServer(msg string) {
 	for s := range names {
 		delete(names, s)
 	}
-
-	if time.Now().Hour() == 20 {
-		time.Sleep(10 * time.Hour)
-	}
-	// 睡眠一小时，防止再次艾特
-	time.Sleep(1 * time.Hour)
-	Server()
 }
 
-func IfBug() {
-	msg := "您的程序成功出问题了，赶紧去看看看看看看看看吧"
+func IfBug(m string) {
+	msg := "您的程序" + m + "成功出问题了，赶紧去看看看看看看看看吧"
 	url := "http://127.0.0.1:5700//send_private_msg?user_id=1225101127&message=" + msg
 
 	var req *http.Request

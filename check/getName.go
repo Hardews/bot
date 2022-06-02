@@ -23,7 +23,7 @@ func IsClock(xh string) bool {
 	stamp := strconv.FormatInt(time.Now().Unix(), 10)
 
 	// 向we重邮请求时需要的参数key的原型json
-	var u = "{\"xh\":\"" + xh + "\",\"openid\":\"2234\",\"timestamp\":" + stamp + "}"
+	var u = "{\"xh\":\"" + xh + "\",\"openid\":\"3234\",\"timestamp\":" + stamp + "}"
 
 	// 对其进行base64加密后成为key
 	key := base64.StdEncoding.EncodeToString([]byte(u))
@@ -44,7 +44,7 @@ func IsClock(xh string) bool {
 	}
 
 	// 请求延时
-	time.Sleep(5 * time.Second)
+	time.Sleep(2 * time.Second)
 
 	defer resp.Body.Close()
 
