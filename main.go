@@ -2,6 +2,7 @@ package main
 
 import (
 	"bot/check"
+	"bot/dao"
 	"fmt"
 	"github.com/robfig/cron"
 	"net/http"
@@ -16,7 +17,7 @@ type info struct {
 func main() {
 	fmt.Println("程序运行中....")
 
-	InitDB()
+	dao.InitDB()
 
 	//GetInfo()
 
@@ -160,7 +161,7 @@ func DoAt(names map[string]info) {
 func InitInfo() map[string]info {
 	var classmate = make(map[string]info)
 	for id := 1; id <= 33; id++ {
-		stu, err := SelectXh(id)
+		stu, err := dao.SelectXh(id)
 		if err != nil {
 			fmt.Println("select failed,err:", err)
 			IfBug("因为" + err.Error())
