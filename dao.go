@@ -47,7 +47,7 @@ func InitDB() {
 
 func SelectXh(id int) (Stu, error) {
 	var stu Stu
-	tx := dB.Model(&Stu{}).Where("ui", id).First(&stu)
+	tx := dB.Model(&Stu{}).Where("uid = ?", id).First(&stu)
 	if err := tx.Error; err != nil {
 		return Stu{}, err
 	}
